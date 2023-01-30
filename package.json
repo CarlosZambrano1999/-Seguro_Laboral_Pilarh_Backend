@@ -1,0 +1,32 @@
+{
+  "name": "-seguro_laboral_pilarh_backend",
+  "version": "1.0.0",
+  "description": "Web services sistema de seguros de Empleados Pilarh-OPDF",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosZambrano1999/-Seguro_Laboral_Pilarh_Backend.git"
+  },
+  "keywords": [
+    "ES"
+  ],
+  "author": "czambrano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CarlosZambrano1999/-Seguro_Laboral_Pilarh_Backend/issues"
+  },
+  "homepage": "https://github.com/CarlosZambrano1999/-Seguro_Laboral_Pilarh_Backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mssql": "^9.1.1",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.20"
+  }
+}
