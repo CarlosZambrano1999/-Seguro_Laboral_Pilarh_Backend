@@ -10,7 +10,7 @@ async function crearPassword(sesion) {
         const salt = bcrypt.genSaltSync(Math.random() * (10 - 1));
         const hash = bcrypt.hashSync(sesion.password, salt);
         const pool = await poolPromise;
-        let usuario = await pool.request().input('cod_usuario', sql.VarChar, sesion.cod_usuario).
+        let usuario = await pool.request().input('correo', sql.VarChar, sesion.correo).
             input('salt', sql.NVarChar, salt).
             input('hash', sql.NVarChar, hash).
             execute(`SP_CREAR_PASSWORD`);
@@ -22,9 +22,6 @@ async function crearPassword(sesion) {
             }else{
                 const tokenSession = await tokenSign(user[0]); //si es exitoso retorna todos los datos necesarios del usuario
                 result = {usuario: usuario.recordsets[0], token:tokenSession};
-                if(us.id_rol==3){
-                    emailSender.mailBienvenida(us);
-                }
             }
         } 
         return result;
@@ -63,7 +60,7 @@ async function cambiarPassword(id_usuario,sesion) {
 async function login(us){
     try {
         const pool = await poolPromise;
-        let usuario = await pool.request().input('cod_usuario', sql.VarChar, us.cod_usuario)
+        let usuario = await pool.request().input('correo', sql.VarChar, us.correo)
             .execute(`SP_VER_CREDENCIALES`);
         if(usuario){
             if(usuario.recordsets[0].length>0){
@@ -74,10 +71,10 @@ async function login(us){
                 if (compared) {
                     result = {usuario: usuario.recordsets[0], token:tokenSession};//si es exitoso retorna todos los datos necesarios del usuario
                 } else {
-                    result = {error: 'error', message:'datos erroneos, por favor verifique su codigo y contraseña'};
+                    result = {error: 'error', message:'datos erroneos, por favor verifique su correo y contraseña'};
                 }
             }else{
-                result={error: 'error', message:'El codigo de usuario no esta registrado o ha sido dado de baja, por favor registrese'};
+                result={error: 'error', message:'El correo de usuario no esta registrado o ha sido dado de baja, por favor registrese'};
             }
         }
         return result;
