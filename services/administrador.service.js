@@ -6,7 +6,7 @@ var sql = require('mssql');
 async function obtenerAdministradores() {
     try {
         const pool = await poolPromise;
-        let administrador = await pool.request().query(`SELECT id_usuario, codigo_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE fk_id_rol=2 AND deleted_at is null ORDER BY nombre`);
+        let administrador = await pool.request().query(`SELECT id_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE fk_id_rol=1 AND deleted_at is null ORDER BY nombre`);
         return administrador.recordsets[0];
     } catch (error) {
         console.log(error);
@@ -18,7 +18,7 @@ async function obtenerAdministrador(cod_usuario) {
     try {
         const pool = await poolPromise;
         let administrador = await pool.request().input('input_parameter', sql.VarChar, cod_usuario)
-            .query(`SELECT id_usuario, codigo_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE codigo_usuario LIKE +'%'+@input_parameter+'%'`);
+            .query(`SELECT id_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE codigo_usuario LIKE +'%'+@input_parameter+'%'`);
         return administrador.recordsets[0];
     } catch (error) {
         console.log(error);
