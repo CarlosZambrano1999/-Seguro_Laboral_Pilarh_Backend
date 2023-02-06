@@ -6,7 +6,7 @@ var sql = require('mssql');
 async function obtenerAdministradores() {
     try {
         const pool = await poolPromise;
-        let administrador = await pool.request().query(`SELECT id_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE fk_id_rol=1 AND deleted_at is null ORDER BY nombre`);
+        let administrador = await pool.request().query(`SELECT id_usuario, nombre, correo, deleted_user as inactivo FROM usuario WHERE fk_id_rol=1 ORDER BY nombre`);
         return administrador.recordsets[0];
     } catch (error) {
         console.log(error);
@@ -29,8 +29,7 @@ async function obtenerAdministrador(cod_usuario) {
 async function crearAdministrador(id,administrador){
     try {
         const pool = await poolPromise;
-        let insertarAdmin = await pool.request().input('cod_usuario', sql.VarChar, administrador.cod_usuario).
-            input('nombre', sql.VarChar, administrador.nombre).
+        let insertarAdmin = await pool.request().input('nombre', sql.VarChar, administrador.nombre).
             input('correo', sql.VarChar, administrador.correo).
             input('id_super_admin', sql.Int, id).
             execute(`SP_CREAR_ADMINISTRADOR`);
