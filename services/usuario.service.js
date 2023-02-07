@@ -151,23 +151,23 @@ async function resetPassword(sesion) {
         const salt = bcrypt.genSaltSync(Math.random() * (10 - 1));
         const hash = bcrypt.hashSync(sesion.password, salt);
         const pool = await poolPromise;
-        let usuario = await pool.request().input('cod_usuario', sql.VarChar, sesion.cod_usuario)
-            .query(`SELECT id_usuario, codigo_usuario, nombre, correo, fk_id_rol as id_rol FROM usuario WHERE codigo_usuario=@cod_usuario AND deleted_at is null`);
+        let usuario = await pool.request().input('correo', sql.VarChar, sesion.correo)
+            .query(`SELECT id_usuario, nombre, correo, fk_id_rol as id_rol FROM usuario WHERE correo=@correo AND deleted_at is null`);
         if(usuario){
             if(usuario.recordsets[0].length>0){
                 user = usuario.recordsets[0];
                 us = user[0];
-                let cambiarPassword = await pool.request().input('cod_usuario', sql.VarChar, us.codigo_usuario).
+                let cambiarPassword = await pool.request().input('correo', sql.VarChar, us.correo).
                 input('salt', sql.NVarChar, salt).
                 input('hash', sql.NVarChar, hash).
                 execute(`SP_CAMBIAR_PASSWORD`);
                 const tokenSession = await tokenSign(user[0]); //si es exitoso retorna todos los datos necesarios del usuario
                 result = {usuario: usuario.recordsets[0], token:tokenSession};
             }else{
-                result={error: 'error', message:'El codigo de usuario es erroneo o ha sido dado de baja'};
+                result={error: 'error', message:'El correo de usuario es erroneo o ha sido dado de baja'};
             }
         }else{
-            result={error: 'error', message:'El codigo de usuario es erroneo o ha sido dado de baja'};
+            result={error: 'error', message:'El correo de usuario es erroneo o ha sido dado de baja'};
         }
         return result;
     } catch (error) {

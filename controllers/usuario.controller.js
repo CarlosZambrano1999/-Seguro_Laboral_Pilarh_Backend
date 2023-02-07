@@ -153,7 +153,7 @@ const resetPassword = async(req,res) =>{
         var result = await usuarioService.resetPassword(sesion);
         if(!result.error){
             return res.status(200).json({
-                data:result.usuario[0], message:'succesfully', rol: result.usuario[0].id_rol, token: result.token
+                data:result.usuario[0], message:'Successfully', rol: result.usuario[0].id_rol, token: result.token
             });
         }else{
             return res.status(200).json({
