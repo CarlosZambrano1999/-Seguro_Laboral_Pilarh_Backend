@@ -12,6 +12,7 @@ const agenciaRoute = require('./routes/agencia.route');
 const empleadoRoute = require('./routes/empleado.route');
 const estadoRoute = require('./routes/estado.route');
 const usuarioRoute = require('./routes/usuario.route');
+const datosRoute = require('./routes/datos.route');
 
 // Configuraciones
 app.set('port', process.env.PORT || 6000);
@@ -28,6 +29,7 @@ app.use('/agencia', agenciaRoute);
 app.use('/empleado', empleadoRoute);
 app.use('/estado', estadoRoute);
 app.use('/usuario', usuarioRoute);
+app.use('/datos', datosRoute);
 
 //Levantando servidor
 app.listen(app.get('port'), () => {
