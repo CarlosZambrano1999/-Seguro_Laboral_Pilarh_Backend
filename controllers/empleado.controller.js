@@ -14,63 +14,6 @@ const obtenerEmpleados = async (req,res) => {
     }
 };
 
-//OBTENER EMPLEADO POR COD_USUARIO
-const obtenerEmpleado = async (req,res) => {
-    const cod_usuario = req.params.cod_usuario;
-    try {
-        var result = await empleadoService.obtenerEmpleado(cod_usuario);
-        return res.status(200).json({
-            data:result, message:'Successfully'
-        });
-    } catch (error) {
-        return res.status(400).json({
-            status:400, message:error.message
-        });
-    }
-};
-
-//OBTENER EMPLEADO POR AGENCIA
-const obtenerEmpleadosxAgencia = async (req,res) => {
-    const id_agencia = req.params.id_agencia;
-    try {
-        var empleado = await empleadoService.obtenerEmpleadosxAgencia(id_agencia);
-        return res.status(200).json({
-            data:empleado, message:'Successfully'
-        });
-    } catch (error) {
-        return res.status(400).json({
-            status:400, message:error.message
-        });
-    }
-};
-
-//OBTENER EMPLEADOS LOGUEADOS
-const obtenerEmpleadosLogueados = async (req,res) => {
-    try {
-        var result = await empleadoService.obtenerEmpleadosLogueados();
-        return res.status(200).json({
-            data:result, message:'Successfully'
-        });
-    } catch (error) {
-        return res.status(400).json({
-            status:400, message:error.message
-        });
-    }
-};
-
-//OBTENER EMPLEADOS SIN LOGUEAR
-const obtenerEmpleadosSinLoguear = async (req,res) => {
-    try {
-        var result = await empleadoService.obtenerEmpleadosSinLoguear();
-        return res.status(200).json({
-            data:result, message:'Successfully'
-        });
-    } catch (error) {
-        return res.status(400).json({
-            status:400, message:error.message
-        });
-    }
-};
 
 //CREAR EMPLEADOS
 const crearEmpleado = async(req,res)=>{
@@ -116,20 +59,6 @@ const editarEmpleado = async(req,res) =>{
     }
 };
 
-//listar Empleados inhabilitados
-const empleadosInhabilitados = async (req,res) => {
-    try {
-        var result = await empleadoService.empleadosInhabilitados();
-        return res.status(200).json({
-            data:result, message:'Successfully'
-        });
-    } catch (error) {
-        return res.status(400).json({
-            status:400, message:error.message
-        });
-    }
-};
-
 //FILTRAR Empleados
 const filtrarEmpleados = async (req,res) => {
     const query = {...req.body};
@@ -145,13 +74,13 @@ const filtrarEmpleados = async (req,res) => {
     }
 };
 
-
-//AGREGAR FIRMA
-const agregarFirma = async(req,res) =>{
+//CREAR Pacientes
+const crearPaciente = async(req,res)=>{
     const empleado = {...req.body};
     const idUser = req.idUser;
+    const id_empleado = req.params.id_empleado;
     try {
-        var result = await empleadoService.agregarFirma(idUser,empleado);
+        var result= await empleadoService.crearPaciente(idUser,id_empleado,empleado);
         if(result[0].error){
             return res.status(200).json({
                 message: result[0].mensaje
@@ -168,16 +97,27 @@ const agregarFirma = async(req,res) =>{
     }
 };
 
+//OBTENER Pacientes
+const obtenerPacientes = async (req,res) => {
+    const id_empleado = req.params.id_empleado;
+    try {
+        var result = await empleadoService.obtenerPacientes(id_empleado);
+        return res.status(200).json({
+            data:result, message:'Successfully'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
+
 
 module.exports={
     obtenerEmpleados,
-    obtenerEmpleado,
-    obtenerEmpleadosLogueados,
-    obtenerEmpleadosSinLoguear,
-    obtenerEmpleadosxAgencia,
     crearEmpleado,
     editarEmpleado,
-    empleadosInhabilitados,
     filtrarEmpleados,
-    agregarFirma
+    crearPaciente,
+    obtenerPacientes
 };

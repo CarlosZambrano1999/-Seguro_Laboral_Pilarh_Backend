@@ -6,7 +6,7 @@ var sql = require('mssql');
 async function obtenerAgencias() {
     try {
         const pool = await poolPromise;
-        let agencia = await pool.request().query(`SELECT id_agencia, nombre, telefono FROM agencia WHERE deleted_at is null`);
+        let agencia = await pool.request().query(`SELECT id_agencia, nombre, telefono, deleted_at AS inactivo FROM agencia order by nombre`);
         return agencia.recordsets[0];
     } catch (error) {
         console.log(error);
