@@ -102,11 +102,42 @@ async function obtenerPacientes(id_empleado) {
     }
 }
 
+// Funcion para Editar Paciente
+async function editarPaciente(id,paciente) {
+    try {
+        const pool = await poolPromise;
+        let editPaciente = await pool.request().input('id_usuario', sql.Int, paciente.id_usuario).
+            input('id_paciente', sql.Int, paciente.id_paciente).
+            input('paciente', sql.VarChar, paciente.paciente).
+            input('id_admin_upd', sql.Int, id).
+            execute(`SP_EDITAR_PACIENTE`);
+        return editPaciente.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// Funcion para inhabilitar Paciente
+async function inhabilitarPaciente(id,paciente) {
+    try {
+        const pool = await poolPromise;
+        let editPaciente = await pool.request().input('id_usuario', sql.Int, paciente.id_usuario).
+            input('id_paciente', sql.Int, paciente.id_paciente).
+            input('id_admin_upd', sql.Int, id).
+            execute(`SP_DELETE_PACIENTE`);
+        return editPaciente.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     obtenerEmpleados,
     crearEmpleado,
     editarEmpleado,
     filtrarEmpleados,
     crearPaciente,
-    obtenerPacientes
+    obtenerPacientes,
+    editarPaciente,
+    inhabilitarPaciente
 };

@@ -112,6 +112,49 @@ const obtenerPacientes = async (req,res) => {
     }
 };
 
+//EDITAR Paciente
+const editarPaciente = async(req,res) =>{
+    const paciente = {...req.body};
+    const idUser = req.idUser;
+    try {
+        var result = await empleadoService.editarPaciente(idUser,paciente);
+        if(result[0].error){
+            return res.status(200).json({
+                message: result[0].mensaje
+            });
+        }else{
+            return res.status(200).json({
+                data: result[0], message: 'Successfully'
+            });
+        }
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
+
+//INHABILITAR Paciente
+const inhabilitarPaciente = async(req,res) =>{
+    const paciente = {...req.body};
+    const idUser = req.idUser;
+    try {
+        var result = await empleadoService.inhabilitarPaciente(idUser,paciente);
+        if(result[0].error){
+            return res.status(200).json({
+                message: result[0].mensaje
+            });
+        }else{
+            return res.status(200).json({
+                data:result[0], message:'Successfully'
+            });    
+        }
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
 
 module.exports={
     obtenerEmpleados,
@@ -119,5 +162,7 @@ module.exports={
     editarEmpleado,
     filtrarEmpleados,
     crearPaciente,
-    obtenerPacientes
+    obtenerPacientes,
+    editarPaciente, 
+    inhabilitarPaciente
 };

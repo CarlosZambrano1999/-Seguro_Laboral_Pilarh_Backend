@@ -10,4 +10,6 @@ router.route('/editarempleado').all(checkAuth).all(checkRoleAuth([1])).post(empl
 router.route('/filtrar').post(empleadoController.filtrarEmpleados); //http://localhost:8080/empleado/inhabilitados
 router.route('/crearPaciente/:id_empleado').all(checkAuth).all(checkRoleAuth([1])).post(empleadoController.crearPaciente); //http://localhost:8080/empleado/crearPaciente/:id_empleado
 router.route('/pacientes/:id_empleado').get(empleadoController.obtenerPacientes);//http://localhost:8080/empleado/pacientes/:id_empleado
+router.route('/editarPaciente').all(checkAuth).all(checkRoleAuth([1])).post(empleadoController.editarPaciente); //http://localhost:8080/empleado/editarPaciente
+router.route('/deletePaciente').all(checkAuth).all(checkRoleAuth([1])).post(empleadoController.inhabilitarPaciente); //http://localhost:8080/empleado/deletePaciente
 module.exports=router;
