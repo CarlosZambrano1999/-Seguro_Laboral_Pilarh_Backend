@@ -131,6 +131,22 @@ async function inhabilitarPaciente(id,paciente) {
     }
 }
 
+//Funcion para obtener empleados por id de agencia
+async function obtenerEmpleadosxAgencia(id_agencia) {
+    try {
+        const pool = await poolPromise;
+        let empleado = await pool.request().input('input_parameter', sql.Int, id_agencia)
+            .query(`SELECT u.id_usuario, u.certificado, u.nombre, u.correo, a.id_agencia, 
+            a.nombre as agencia, u.deleted_user as inactivo FROM usuario as u  
+            INNER JOIN agencia as a ON u.fk_id_agencia=a.id_agencia
+            WHERE a.id_agencia = @input_parameter
+            ORDER BY u.nombre`);
+        return empleado.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     obtenerEmpleados,
     crearEmpleado,
@@ -139,5 +155,6 @@ module.exports = {
     crearPaciente,
     obtenerPacientes,
     editarPaciente,
-    inhabilitarPaciente
+    inhabilitarPaciente,
+    obtenerEmpleadosxAgencia
 };

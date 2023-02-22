@@ -156,6 +156,21 @@ const inhabilitarPaciente = async(req,res) =>{
     }
 };
 
+//OBTENER EMPLEADO POR AGENCIA
+const obtenerEmpleadosxAgencia = async (req,res) => {
+    const id_agencia = req.params.id_agencia;
+    try {
+        var empleado = await empleadoService.obtenerEmpleadosxAgencia(id_agencia);
+        return res.status(200).json({
+            data:empleado, message:'Successfully'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
+
 module.exports={
     obtenerEmpleados,
     crearEmpleado,
@@ -164,5 +179,6 @@ module.exports={
     crearPaciente,
     obtenerPacientes,
     editarPaciente, 
-    inhabilitarPaciente
+    inhabilitarPaciente,
+    obtenerEmpleadosxAgencia,
 };

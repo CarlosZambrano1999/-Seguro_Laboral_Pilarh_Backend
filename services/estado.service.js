@@ -1,7 +1,7 @@
 var { poolPromise } = require('../modules/sqldb');
 var sql = require('mssql');
 
-//Funcion para obtener los estados de una encomienda
+//Funcion para obtener los estados de un reclamo
 async function obtenerEstados() {
     try {
         const pool = await poolPromise;
@@ -12,6 +12,18 @@ async function obtenerEstados() {
     }
 }
 
+//Funcion para obtener los tipos de reclamo (Factura o Recibo)
+async function obtenerTipos() {
+    try {
+        const pool = await poolPromise;
+        let tipo = await pool.request().query(`SELECT * FROM tipo_documento`);
+        return tipo.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
-    obtenerEstados
+    obtenerEstados,
+    obtenerTipos
 };

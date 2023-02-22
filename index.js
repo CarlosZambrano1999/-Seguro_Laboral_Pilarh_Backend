@@ -13,6 +13,7 @@ const empleadoRoute = require('./routes/empleado.route');
 const estadoRoute = require('./routes/estado.route');
 const usuarioRoute = require('./routes/usuario.route');
 const datosRoute = require('./routes/datos.route');
+const reclamoRoute = require('./routes/reclamo.route');
 
 // Configuraciones
 app.set('port', process.env.PORT || 6000);
@@ -30,6 +31,7 @@ app.use('/empleado', empleadoRoute);
 app.use('/estado', estadoRoute);
 app.use('/usuario', usuarioRoute);
 app.use('/datos', datosRoute);
+app.use('/reclamo', reclamoRoute);
 
 //Levantando servidor
 app.listen(app.get('port'), () => {
