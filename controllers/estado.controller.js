@@ -28,7 +28,21 @@ const obtenerTipos = async (req,res) => {
     }
 };
 
+//OBTENER Monedas
+const obtenerMonedas = async (req,res) => {
+    try {
+        var result = await estadoService.obtenerMonedas();
+        return res.status(200).json({
+            data:result, message:'Successfully'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
 module.exports = {
     obtenerEstados,
-    obtenerTipos
+    obtenerTipos,
+    obtenerMonedas
 };

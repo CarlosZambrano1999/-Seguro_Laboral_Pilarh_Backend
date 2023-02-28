@@ -23,7 +23,18 @@ async function obtenerTipos() {
     }
 }
 
+//Funcion para obtener las monedas
+async function obtenerMonedas() {
+    try {
+        const pool = await poolPromise;
+        let tipo = await pool.request().query(`SELECT * FROM moneda`);
+        return tipo.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
 module.exports = {
     obtenerEstados,
-    obtenerTipos
+    obtenerTipos,
+    obtenerMonedas
 };

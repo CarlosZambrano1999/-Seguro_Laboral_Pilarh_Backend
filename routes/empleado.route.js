@@ -13,4 +13,5 @@ router.route('/pacientes/:id_empleado').get(empleadoController.obtenerPacientes)
 router.route('/editarPaciente').all(checkAuth).all(checkRoleAuth([1])).post(empleadoController.editarPaciente); //http://localhost:8080/empleado/editarPaciente
 router.route('/deletePaciente').all(checkAuth).all(checkRoleAuth([1])).post(empleadoController.inhabilitarPaciente); //http://localhost:8080/empleado/deletePaciente
 router.route('/agencia/:id_agencia').get(empleadoController.obtenerEmpleadosxAgencia);//http://localhost:8080/empleado/agencia/:
+router.route('/datos/:correo').get(empleadoController.obtenerEmpleado);//http://localhost:8080/empleado/pacientes/:id_empleado
 module.exports=router;

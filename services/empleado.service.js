@@ -147,6 +147,18 @@ async function obtenerEmpleadosxAgencia(id_agencia) {
     }
 }
 
+//Funcion para obtener empleado x correo
+async function obtenerEmpleado(correo) {
+    try {
+        const pool = await poolPromise;
+        let usuario = await pool.request().input('correo', sql.VarChar, correo).
+        query(`SELECT * FROM usuario WHERE correo=@correo`);
+        return usuario.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     obtenerEmpleados,
     crearEmpleado,
@@ -156,5 +168,6 @@ module.exports = {
     obtenerPacientes,
     editarPaciente,
     inhabilitarPaciente,
-    obtenerEmpleadosxAgencia
+    obtenerEmpleadosxAgencia,
+    obtenerEmpleado
 };

@@ -121,23 +121,23 @@ async function obtenerUsuario(id) {
     }
 }
 
-//Funcion para solicitar reset de contraseña
-async function resetear(codigo){
+//Funcion para consultar reclamos
+async function consultar(correo){
     try {
         const pool = await poolPromise;
-        let usuario = await pool.request().input('cod_usuario', sql.VarChar, codigo)
-            .query(`SELECT id_usuario, codigo_usuario, nombre, correo FROM usuario WHERE codigo_usuario=@cod_usuario AND deleted_at is null`);
+        let usuario = await pool.request().input('correo', sql.VarChar, correo)
+            .query(`SELECT id_usuario, nombre, correo FROM usuario WHERE correo=@correo AND deleted_at is null`);
         if(usuario){
             if(usuario.recordsets[0].length>0){
                 user = usuario.recordsets[0];
                 us = user[0];
-                emailSender.mailResetPassword(us);
+                emailSender.mailConsultar(us);
                 result = usuario.recordsets[0];
             }else{
-                result={error: 'error', message:'El codigo de usuario es erroneo o ha sido dado de baja'};
+                result={error: 'error', message:'El correo de usuario es erroneo o ha sido dado de baja'};
             }
         }else{
-            result={error: 'error', message:'El codigo de usuario es erroneo o ha sido dado de baja'};
+            result={error: 'error', message:'El correo de usuario es erroneo o ha sido dado de baja'};
         }
         return result;
     } catch (error) {
@@ -182,6 +182,6 @@ module.exports = {
     inhabilitarUsuario,
     habilitarUsuario,
     obtenerUsuario,
-    resetear,
+    consultar,
     resetPassword
 };

@@ -125,11 +125,11 @@ const obtenerUsuario = async (req,res) => {
     }
 };
 
-//Solicitar reset de contraseña
-const resetear = async (req,res) => {
+//Consultar reclamos
+const consultar = async (req,res) => {
     const usuario = req.params.usuario;
     try {
-        var result = await usuarioService.resetear(usuario);
+        var result = await usuarioService.consultar(usuario);
         if(result.error){
             return res.status(200).json({
                 status:400, message:result.message
@@ -174,6 +174,6 @@ module.exports={
     inhabilitarUsuario,
     habilitarUsuario,
     obtenerUsuario,
-    resetear,
+    consultar,
     resetPassword
 };
