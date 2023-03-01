@@ -115,7 +115,7 @@ async function obtenerReclamosXId(id_reclamo) {
     try {
         const pool = await poolPromise;
         let reclamos = await pool.request().input('input_parameter',sql.Int, id_reclamo).
-        query(`SELECT us.nombre, us.certificado, mon.moneda, rec.valor_reclamo, pac.paciente FROM reclamo as rec INNER JOIN paciente as pac
+        query(`SELECT us.nombre, us.correo, us.certificado, mon.moneda, rec.valor_reclamo, pac.paciente FROM reclamo as rec INNER JOIN paciente as pac
                 ON pac.id_paciente= rec.fk_id_paciente
                 INNER JOIN usuario as us
                 ON us.id_usuario=pac.fk_id_usuario
@@ -204,6 +204,12 @@ async function reembolsar(id_reclamo, reembolso){
             input('observaciones', sql.NVarChar, reembolso.observaciones).
             input('moneda', sql.Int, reembolso.moneda).
             execute(`SP_CREAR_REEMBOLSO`);
+        const factura = dozer.recordsets[0];
+        const reclamo = await obtenerReclamosXId(id_reclamo);
+        const monetarios = await obtenerMonetarios(id_reclamo);
+        const referenciales = await obtenerReferenciales(id_reclamo);
+        const empresa = await datosService.obtenerEmpresa();
+        emailSender.mailConfirmarReclamo(reclamo[0], monetarios, referenciales, empresa[0],factura[0]);
         return dozer.recordsets[0];
     } catch (error) {
         console.log(error);

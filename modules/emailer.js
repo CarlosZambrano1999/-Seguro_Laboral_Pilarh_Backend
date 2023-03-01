@@ -21,7 +21,7 @@ var transport = nodemailer.createTransport({
   }
 });*/
 
-async function mailEnviarReclamo(reclamo, mon, ref, aseguradora, empresa){
+async function mailEnviarReclamo(reclamo, mon, ref, empresa){
   try {
     const mes = new Intl.DateTimeFormat('es-ES', {month: 'long'}).format(new Date());
     const anio = new Date().getFullYear();
@@ -43,7 +43,7 @@ async function mailEnviarReclamo(reclamo, mon, ref, aseguradora, empresa){
     const info = await transport.sendMail({
       from: '"PILARH Encomiendas" <pilarh.encomiendas@gmail.com>',
       to: reclamo.correo,
-      subject: `Tu reclamo ha sido enviado a la aseguradora`,
+      subject: `Tu reclamo ha sido enviado a la aseguradora ${dia}/${mes}/${anio}`,
       html: `</center>
       <tbody style="background-color:#f9f9f9">
         <div>
@@ -61,7 +61,7 @@ async function mailEnviarReclamo(reclamo, mon, ref, aseguradora, empresa){
           ${refer}
         </div> 
           <p>Para ver mas detalles haz clik en el siguiente enlace</p>
-          <center><a href="http://${env.FE_HOST}${env.FE_PORT}/senFOREIGN KEY (fk_id_reclamo)  references reclamo(id_reclamo)t">Haz click aqui</a></center>
+          <center><a href="http://${env.FE_HOST}${env.FE_PORT}/">Haz click aqui</a></center>
       </tbody>
   </center>`,
   });  
@@ -77,7 +77,7 @@ async function mailConsultar(user){
     const info = await transport.sendMail({
       from: '"PILARH Encomiendas" <pilarh.encomiendas@gmail.com>',
       to: `${user.correo}`,
-      subject: `Cambio de contraseña Sistema de encomiendas de PILARH`,
+      subject: `Consulta de reclamos Seguros`,
       html: `</center>
       <tbody style="background-color:#f9f9f9">
           <tr style="padding:0">
@@ -104,7 +104,87 @@ async function mailConsultar(user){
   return;
 }
 
+async function mailConfirmarReclamo(reclamo, mon, ref, empresa, factura){
+  try {
+    const mes = new Intl.DateTimeFormat('es-ES', {month: 'long'}).format(new Date());
+    const anio = new Date().getFullYear();
+    const dia = new Date().getDate();
+    let monet = "";
+    let refer = "";
+    for( let i=0; i<mon.length; i++){
+      monet = monet + ` <b>     .</b> 1 ${mon[i].tipo} N° ${mon[i].numero} ${mon[i].descripcion} ${mon[i].moneda}. ${convertir(mon[i].valor)} <br>`     
+    }  
+    if(ref.length>0){
+      for (let j=0; j<ref.length; j++){
+        refer = refer + `<b>     .</b> ${ref[j].cantidad} ${ref[j].descripcion} <br>`
+      }
+    }
+    function convertir(valor_reclamo){
+      const valor_final= parseFloat(valor_reclamo).toFixed(2);
+      return valor_final;
+    }
+    const info = await transport.sendMail({
+      from: '"PILARH Encomiendas" <pilarh.encomiendas@gmail.com>',
+      to: reclamo.correo,
+      subject: `Tu reclamo ha sido reembolsado ${dia}/${mes}/${anio}`,
+      html: `</center>
+      <tbody style="background-color:#f9f9f9">
+        <div>
+          <b>El siguiente Reclamo ha sido reembolsado</b>
+        </div> <br>
+      
+        <div class="mensaje" style="border= 1 px solid #000">
+          <p>Santa Rosa de Copán, ${dia} de ${mes} del ${anio}</p>
+          
+          <p>Adjunto a la presente le envío formulario de reclamaciones de gastos médicos, con toda su documentación soporte del siguiente asegurado:</p>
+          <p><b>Titular:</b> ${reclamo.nombre}, póliza N. ${empresa.poliza}, Certificado N. ${reclamo.certificado}, cuyo valor del reclamo asciende a:  <b>${reclamo.moneda}. ${convertir(reclamo.valor_reclamo)}</b></p><br>
+          <p><b>Paciente:</b> ${reclamo.paciente}</p> 
+          <p>Documentos:</p>
+          ${monet}
+          ${refer}
+        </div> <br>
+        <table>
+          <tbody>
+            <tr>
+              <td><b>Total Cubierto</b></td>
+              <td>${convertir(factura.total_cubierto)}</td>
+            <tr>
+              <td>(-) Deducible</td>
+              <td>${convertir(factura.deducible)}</td>
+            </tr> 
+            <tr>  
+              <td>(-) Coaseguro</td>
+              <td>${convertir(factura.coaseguro)}</td>
+            <tr>
+              <td><hr></td>
+              <td><hr></td>
+            </tr>
+            <tr>
+              <td><b>Total a Pagar</b></td>
+              <td>${convertir(factura.total_a_pagar)}</td>
+            </tr>    
+          </tbody>
+        </table> 
+        <br>
+        <div>
+          <h6>${factura.fecha}</h6>
+          <h4><b>OBSERVACIONES</b></h4>
+          <p>${factura.observaciones}</p>
+        </div>
+          <p>Para ver mas detalles consulta en el siguiente enlace</p>
+          <center><a href="http://${env.FE_HOST}${env.FE_PORT}/">Haz click aqui</a></center>
+      </tbody>
+  </center>`,
+  });  
+  } catch (error) {
+    console.log(error);
+  }
+  return;
+}
+
+
 module.exports = {
   mailEnviarReclamo,
+  mailConfirmarReclamo,
   mailConsultar
 };
