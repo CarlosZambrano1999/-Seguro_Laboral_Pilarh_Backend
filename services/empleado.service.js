@@ -82,6 +82,7 @@ async function crearPaciente(id,id_empleado, paciente){
         const pool = await poolPromise;
         let insertarPaciente = await pool.request().input('id_usuario', sql.Int, id_empleado).
             input('nombre', sql.VarChar, paciente.nombre).
+            input('parentesco', sql.Int, paciente.parentesco).
             input('id_admin_upd', sql.Int, id).
             execute(`SP_CREAR_PACIENTE`);
         return insertarPaciente.recordsets[0];
@@ -95,7 +96,10 @@ async function obtenerPacientes(id_empleado) {
     try {
         const pool = await poolPromise;
         let paciente = await pool.request().input('id_empleado', sql.Int, id_empleado).
-        query(`SELECT * FROM paciente WHERE fk_id_usuario=@id_empleado and activo=1`);
+        query(`SELECT p.fk_id_usuario, p.id_paciente, p.paciente, p.tipo, pa.parentesco, pa.id_parentesco  FROM paciente as p
+                    INNER JOIN parentesco as pa
+                    ON pa.id_parentesco= p.fk_id_parentesco
+                    WHERE p.fk_id_usuario= @id_empleado AND p.activo=1`);
         return paciente.recordsets[0];
     } catch (error) {
         console.log(error);
@@ -109,6 +113,7 @@ async function editarPaciente(id,paciente) {
         let editPaciente = await pool.request().input('id_usuario', sql.Int, paciente.id_usuario).
             input('id_paciente', sql.Int, paciente.id_paciente).
             input('paciente', sql.VarChar, paciente.paciente).
+            input('parentesco', sql.Int, paciente.parentesco).
             input('id_admin_upd', sql.Int, id).
             execute(`SP_EDITAR_PACIENTE`);
         return editPaciente.recordsets[0];
@@ -158,6 +163,17 @@ async function obtenerEmpleado(correo) {
         console.log(error);
     }
 }
+ 
+//Funcion para obtener Parentesco
+async function obtenerParentesco() {
+    try {
+        const pool = await poolPromise;
+        let parentesco = await pool.request().query(`SELECT * FROM parentesco WHERE id_parentesco!=5`);
+        return parentesco.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
     obtenerEmpleados,
@@ -169,5 +185,6 @@ module.exports = {
     editarPaciente,
     inhabilitarPaciente,
     obtenerEmpleadosxAgencia,
-    obtenerEmpleado
+    obtenerEmpleado,
+    obtenerParentesco
 };

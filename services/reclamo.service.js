@@ -239,7 +239,7 @@ async function obtenerReclamosXUsuario(id_empleado) {
                 INNER JOIN usuario as us ON us.id_usuario= pac.fk_id_usuario
                 INNER JOIN estado as es ON es.id_estado = rec.fk_id_estado
                 INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
-                WHERE us.id_usuario=@input_parameter`);
+                WHERE us.id_usuario=@input_parameter AND rec.deleted_at is null`);
         return reclamos.recordsets[0];
     } catch (error) {
         console.log(error);

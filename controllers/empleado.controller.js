@@ -186,6 +186,20 @@ const obtenerEmpleado = async (req,res) => {
     }
 };
 
+//OBTENER parentesco
+const obtenerParentesco = async (req,res) => {
+    try {
+        var result = await empleadoService.obtenerParentesco();
+        return res.status(200).json({
+            data:result, message:'Successfully'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
+
 module.exports={
     obtenerEmpleados,
     crearEmpleado,
@@ -196,5 +210,6 @@ module.exports={
     editarPaciente, 
     inhabilitarPaciente,
     obtenerEmpleadosxAgencia,
-    obtenerEmpleado
+    obtenerEmpleado,
+    obtenerParentesco
 };
