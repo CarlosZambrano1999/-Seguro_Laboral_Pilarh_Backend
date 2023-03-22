@@ -61,9 +61,22 @@ async function editarEmpresa(id,empresa) {
     }
 }
 
+//Funcion para obtener tipos de reclamo
+async function obtenerTiposReclamos() {
+    try {
+        const pool = await poolPromise;
+        let tipo = await pool.request().query(`SELECT * FROM tipo_reclamo`);
+        return tipo.recordsets[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 module.exports = {
     obtenerAseguradora,
     obtenerEmpresa,
     editarAseguradora,
-    editarEmpresa
+    editarEmpresa,
+    obtenerTiposReclamos
 }

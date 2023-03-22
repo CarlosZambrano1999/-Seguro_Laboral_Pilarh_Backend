@@ -9,6 +9,6 @@ router.route('/empresa').get(datosController.obtenerEmpresa);//http://localhost:
 router.route('/aseguradora').get(datosController.obtenerAseguradora);//http://localhost:8080/Datos/aseguradora
 router.route('/editarEmpresa').all(checkAuth).all(checkRoleAuth([1])).post(datosController.editarEmpresa); //http://localhost:8080/Datos/editarEmpresa
 router.route('/editarAseguradora').all(checkAuth).all(checkRoleAuth([1])).post(datosController.editarAseguradora); //http://localhost:8080/Datos/editarAseguradora
-
+router.route('/tipoReclamos').get(datosController.obtenerTiposReclamos);//http://localhost:8080/Datos/tipoReclamos
 
 module.exports=router;

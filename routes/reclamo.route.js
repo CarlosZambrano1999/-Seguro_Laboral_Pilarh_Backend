@@ -5,7 +5,7 @@ const checkRoleAuth = require('../middlewares/roleAuth');
 const reclamoController = require('../controllers/reclamo.controller');
 
 router.route('/').get(reclamoController.obtenerReclamos);//http://localhost:8080/reclamo
-router.route('/crearReclamo/:id_paciente').all(checkAuth).all(checkRoleAuth([1])).post(reclamoController.crearReclamo); //http://localhost:8080/reclamo/crearReclamo/:id_paciente
+router.route('/crearReclamo/:id_paciente/:tipo').all(checkAuth).all(checkRoleAuth([1])).post(reclamoController.crearReclamo); //http://localhost:8080/reclamo/crearReclamo/:id_paciente
 router.route('/monetarios/:id_reclamo').all(checkAuth).all(checkRoleAuth([1])).post(reclamoController.monetarios); //http://localhost:8080/reclamo/monetarios/:id_reclamo
 router.route('/referenciales/:id_reclamo').all(checkAuth).all(checkRoleAuth([1])).post(reclamoController.referenciales); //http://localhost:8080/reclamo/referenciales/:id_reclamo
 router.route('/filtrar').post(reclamoController.filtrarReclamos); //http://localhost:8080/reclamo/inhabilitados

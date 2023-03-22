@@ -4,11 +4,12 @@ const emailSender = require('../modules/emailer');
 const datosService = require('../services/datos.service')
 
 //Funcion para crear reclamo
-async function crearReclamo(id,id_paciente){
+async function crearReclamo(id,id_paciente, tipo){
     try {
         const pool = await poolPromise;
         let reclamo = await pool.request().input('id_paciente', sql.Int, id_paciente).
             input('id_admin', sql.Int, id).
+            input('tipo', sql.Int, tipo).
             execute(`SP_CREAR_RECLAMO`);
         return reclamo.recordsets[0];
     } catch (error) {
@@ -56,13 +57,14 @@ async function referenciales(id_reclamo, documentos){
 async function obtenerReclamos() {
     try {
         const pool = await poolPromise;
-        let reclamos = await pool.request().query(`SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo FROM reclamo as rec
+        let reclamos = await pool.request().query(`SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo, tip.tipo_reclamo FROM reclamo as rec
         INNER JOIN paciente as pac ON pac.id_paciente= rec.fk_id_paciente
         INNER JOIN usuario as us ON us.id_usuario= pac.fk_id_usuario
         INNER JOIN estado as es ON es.id_estado = rec.fk_id_estado
-        INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda 
+        INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
+		INNER JOIN tipo_reclamo as tip ON tip.id_tipo = rec.fk_id_tipo
         WHERE rec.deleted_at is null
-        ORDER BY es.id_estado, rec.fecha`);
+        ORDER BY rec.fk_id_estado, rec.fecha`);
         return reclamos.recordsets[0];
     } catch (error) {
         console.log(error);
@@ -76,11 +78,12 @@ async function filtrarReclamos(query) {
         console.log('tipo', typeof(query.fecha_inicial));
         let where = ``;
         let orderby =` ORDER BY es.id_estado, rec.fecha `;
-        let queryPrincipal = `SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo FROM reclamo as rec
+        let queryPrincipal = `SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo, tip.tipo_reclamo FROM reclamo as rec
         INNER JOIN paciente as pac ON pac.id_paciente= rec.fk_id_paciente
         INNER JOIN usuario as us ON us.id_usuario= pac.fk_id_usuario
         INNER JOIN estado as es ON es.id_estado = rec.fk_id_estado
-        INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda`
+        INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
+		INNER JOIN tipo_reclamo as tip ON tip.id_tipo = rec.fk_id_tipo`
         if(query.nombre!='' && query.fecha_inicial!='' && query.fecha_final!=''){
             where=` WHERE rec.deleted_at is null AND us.nombre LIKE +'%'+@input_parameter+'%' AND (CAST(rec.fecha as date) >= @fecha_inicial AND CAST(rec.fecha as date)<= @fecha_final )`
         }else if(query.nombre!='' && query.fecha_inicial==='' && query.fecha_final!=''){
@@ -115,11 +118,12 @@ async function obtenerReclamosXId(id_reclamo) {
     try {
         const pool = await poolPromise;
         let reclamos = await pool.request().input('input_parameter',sql.Int, id_reclamo).
-        query(`SELECT us.nombre, us.correo, us.certificado, mon.moneda, rec.valor_reclamo, pac.paciente FROM reclamo as rec INNER JOIN paciente as pac
-                ON pac.id_paciente= rec.fk_id_paciente
-                INNER JOIN usuario as us
-                ON us.id_usuario=pac.fk_id_usuario
-                INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
+        query(`SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo, tip.tipo_reclamo FROM reclamo as rec
+        INNER JOIN paciente as pac ON pac.id_paciente= rec.fk_id_paciente
+        INNER JOIN usuario as us ON us.id_usuario= pac.fk_id_usuario
+        INNER JOIN estado as es ON es.id_estado = rec.fk_id_estado
+        INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
+		INNER JOIN tipo_reclamo as tip ON tip.id_tipo = rec.fk_id_tipo
                 WHERE rec.id_reclamo=@input_parameter`);
         return reclamos.recordsets[0];
     } catch (error) {
@@ -234,12 +238,14 @@ async function obtenerReclamosXUsuario(id_empleado) {
     try {
         const pool = await poolPromise;
         let reclamos = await pool.request().input('input_parameter',sql.Int, id_empleado).
-        query(`SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo FROM reclamo as rec
+        query(`SELECT rec.id_reclamo, us.nombre, pac.paciente, mon.moneda, rec.valor_reclamo, FORMAT(rec.fecha,'dd/MM/yyyy') as fecha, es.estado, es.id_estado, rec.deleted_at as inactivo, tip.tipo_reclamo FROM reclamo as rec
                 INNER JOIN paciente as pac ON pac.id_paciente= rec.fk_id_paciente
                 INNER JOIN usuario as us ON us.id_usuario= pac.fk_id_usuario
                 INNER JOIN estado as es ON es.id_estado = rec.fk_id_estado
                 INNER JOIN moneda as mon ON mon.id_moneda= rec.fk_id_moneda
-                WHERE us.id_usuario=@input_parameter AND rec.deleted_at is null`);
+                INNER JOIN tipo_reclamo as tip ON tip.id_tipo = rec.fk_id_tipo
+                WHERE us.id_usuario=@input_parameter AND rec.deleted_at is null
+                ORDER BY es.id_estado, rec.fecha`);
         return reclamos.recordsets[0];
     } catch (error) {
         console.log(error);

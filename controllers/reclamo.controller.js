@@ -3,9 +3,10 @@ const reclamoService = require('../services/reclamo.service');
 //CREAR RECLAMOS
 const crearReclamo = async(req,res)=>{
     const id_paciente = req.params.id_paciente;
+    const tipo = req.params.tipo;
     const idUser = req.idUser;
     try {
-        var result= await reclamoService.crearReclamo(idUser, id_paciente);
+        var result= await reclamoService.crearReclamo(idUser, id_paciente, tipo);
         if(result[0].error){
             return res.status(400).json({
                 message: result[0].mensaje

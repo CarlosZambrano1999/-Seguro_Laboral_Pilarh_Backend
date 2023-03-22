@@ -72,9 +72,24 @@ const editarAseguradora = async(req,res) =>{
     }
 };
 
+//OBTENER Aseguradora
+const obtenerTiposReclamos = async (req,res) => {
+    try {
+        var result = await datosService.obtenerTiposReclamos();
+        return res.status(200).json({
+            data:result, message:'Successfully'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status:400, message:error.message
+        });
+    }
+};
+
 module.exports = {
     editarAseguradora,
     editarEmpresa,
     obtenerAseguradora,
-    obtenerEmpresa
+    obtenerEmpresa,
+    obtenerTiposReclamos
 }
